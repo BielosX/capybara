@@ -1,9 +1,10 @@
 package com.example.capybara
 
-import android.app.Activity
+import android.os.Bundle
+import androidx.activity.ComponentActivity
 
-class MainActivity: Activity() {
-    override fun onResume() {
-        super.onResume()
+class MainActivity: ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 }
