@@ -1,5 +1,6 @@
 package com.example.capybara
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -42,7 +43,10 @@ fun MainActivityContent() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = {}) {
+        Button(onClick = {
+            val intent = Intent(activity, SecondaryActivity::class.java)
+            activity?.startActivity(intent)
+        }) {
             Text(text = "Start")
         }
         Button(onClick = {}) {
