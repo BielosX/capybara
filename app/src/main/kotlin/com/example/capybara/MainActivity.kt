@@ -44,7 +44,10 @@ fun MainActivityContent() {
         verticalArrangement = Arrangement.Center
     ) {
         Button(onClick = {
-            val intent = Intent(activity, SecondaryActivity::class.java)
+            val intent = Intent(activity, SecondaryActivity::class.java).apply {
+                putExtra("X", 100)
+                putExtra("Y", 200)
+            }
             activity?.startActivity(intent)
         }) {
             Text(text = "Start")
