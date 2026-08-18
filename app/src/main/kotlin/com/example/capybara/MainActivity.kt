@@ -55,7 +55,7 @@ fun MainActivityContent() {
             Text(text = "Options")
         }
         Button(onClick = {
-            activity?.finish()
+            activity?.finishAndRemoveTask()
         }) {
             Text(text = "Exit")
         }
