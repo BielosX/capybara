@@ -1,6 +1,7 @@
 package com.example.capybara
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -11,19 +12,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.parcelize.Parcelize
 
 class SecondaryActivity: ComponentActivity() {
+
+    /*
+        https://developer.android.com/kotlin/parcelize
+        https://plugins.gradle.org/plugin/org.jetbrains.kotlin.plugin.parcelize
+     */
+    @Parcelize
+    data class Input(val x: Int = 0, val y: Int = 0) : Parcelable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var x = 0
-        var y = 0
+        var input = Input(0, 0)
         intent.extras.let { extras ->
-            x = extras!!.getInt("X")
-            y = extras.getInt("Y")
+            extras?.getParcelable<Input>("input", Input::class.java)?.let {
+                input = it
+            }
         }
         setContent {
             MaterialTheme {
-                SecondaryActivityContent(x, y)
+                SecondaryActivityContent(input.x, input.y)
             }
         }
     }

@@ -45,8 +45,7 @@ fun MainActivityContent() {
     ) {
         Button(onClick = {
             val intent = Intent(activity, SecondaryActivity::class.java).apply {
-                putExtra("X", 100)
-                putExtra("Y", 200)
+                putExtra("input", SecondaryActivity.Input(200, 100))
             }
             activity?.startActivity(intent)
         }) {

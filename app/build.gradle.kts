@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.plugin.parcelize")
+    id("com.diffplug.spotless")
 }
 
 /*
@@ -34,4 +36,10 @@ dependencies {
     implementation("androidx.activity:activity:1.13.0")
     implementation("androidx.activity:activity-compose:1.13.0")
     implementation("androidx.compose.material3:material3:1.3.2")
+}
+
+spotless {
+    kotlin {
+        ktfmt().googleStyle()
+    }
 }
