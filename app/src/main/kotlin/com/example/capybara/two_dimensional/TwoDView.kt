@@ -1,6 +1,5 @@
 package com.example.capybara.two_dimensional
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.SurfaceHolder
 import android.view.SurfaceView
