@@ -15,6 +15,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:exported="false" android:name=".SecondaryActivity" />
+        <activity android:exported="false" android:name=".two_dimensional.TwoDActivity" />
     </application>
 </manifest>

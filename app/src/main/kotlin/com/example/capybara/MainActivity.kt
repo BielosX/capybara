@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.example.capybara.two_dimensional.TwoDActivity
 
 class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +45,8 @@ fun MainActivityContent() {
         verticalArrangement = Arrangement.Center
     ) {
         Button(onClick = {
-            val intent = Intent(activity, SecondaryActivity::class.java).apply {
-                putExtra("input", SecondaryActivity.Input(200, 100))
+            val intent = Intent(activity, TwoDActivity::class.java).apply {
+                putExtra("input", TwoDActivity.Input(200, 1000))
             }
             activity?.startActivity(intent)
         }) {
