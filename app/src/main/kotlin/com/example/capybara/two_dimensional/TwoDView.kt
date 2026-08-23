@@ -1,6 +1,11 @@
 package com.example.capybara.two_dimensional
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
+import android.os.Message
+import android.util.Log
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 
@@ -28,5 +33,38 @@ class TwoDView(context: Context): SurfaceView(context), SurfaceHolder.Callback {
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         worker.quit()
         worker.join()
+    }
+
+    fun eventToMessage(event: MotionEvent): Message {
+        val msg = Message.obtain()
+        msg.data = Bundle().apply {
+            putInt("x", event.x.toInt())
+            putInt("y", event.y.toInt())
+        }
+        return msg
+    }
+
+    override fun performClick(): Boolean {
+        Log.d("TwoDView", "performClick")
+        return super.performClick()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when(event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                performClick()
+                worker.handler?.dispatchMessage(eventToMessage(event))
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                worker.handler?.dispatchMessage(eventToMessage(event))
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                worker.handler?.dispatchMessage(Message.obtain())
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
     }
 }
