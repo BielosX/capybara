@@ -56,6 +56,7 @@ class TwoDView(context: Context): SurfaceView(context), SurfaceHolder.Callback {
                 worker.handler?.dispatchMessage(eventToMessage(event))
                 return true
             }
+            // https://developer.android.com/reference/android/view/MotionEvent#batching
             MotionEvent.ACTION_MOVE -> {
                 worker.handler?.dispatchMessage(eventToMessage(event))
                 return true
