@@ -40,6 +40,7 @@ dependencies {
 
 spotless {
     kotlin {
+        target("src/*/kotlin/**/*.kt")
         ktfmt().googleStyle().configure {
             it.setRemoveUnusedImports(true)
         }

@@ -1,10 +1,12 @@
 <!--
     https://developer.android.com/guide/topics/manifest/manifest-intro
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
     <application
             android:icon="@drawable/icon"
             android:label="Capybara"
+            android:appCategory="game"
     >
         <activity
                 android:exported="true"
@@ -15,6 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:exported="false" android:name=".two_dimensional.TwoDActivity" />
+        <!--
+          https://developer.android.com/about/versions/16/behavior-changes-16?hl=en&utm_source=chatgpt.com#exceptions
+        -->
+        <activity android:exported="false"
+                  android:screenOrientation="landscape"
+                  android:name=".two_dimensional.TwoDActivity"
+                  tools:ignore="DiscouragedApi"
+        />
     </application>
 </manifest>

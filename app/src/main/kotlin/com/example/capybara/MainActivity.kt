@@ -19,46 +19,50 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.capybara.two_dimensional.TwoDActivity
 
-class MainActivity: ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val windowInsetsController =
-            WindowCompat.getInsetsController(window, window.decorView)
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-        actionBar?.hide()
-        setContent {
-            MaterialTheme {
-                MainActivityContent()
-            }
-        }
+class MainActivity : ComponentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+    windowInsetsController.systemBarsBehavior =
+      WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    actionBar?.hide()
+    setContent {
+      MaterialTheme {
+        MainActivityContent()
+      }
     }
+  }
 }
 
 @Composable
 fun MainActivityContent() {
-    val activity = LocalActivity.current
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+  val activity = LocalActivity.current
+  Column(
+    modifier = Modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
+  ) {
+    Button(
+      onClick = {
+        val intent =
+          Intent(activity, TwoDActivity::class.java).apply {
+            putExtra("input", TwoDActivity.Input(200, 1000))
+          }
+        activity?.startActivity(intent)
+      }
     ) {
-        Button(onClick = {
-            val intent = Intent(activity, TwoDActivity::class.java).apply {
-                putExtra("input", TwoDActivity.Input(200, 1000))
-            }
-            activity?.startActivity(intent)
-        }) {
-            Text(text = "Start")
-        }
-        Button(onClick = {}) {
-            Text(text = "Options")
-        }
-        Button(onClick = {
-            activity?.finishAndRemoveTask()
-        }) {
-            Text(text = "Exit")
-        }
+      Text(text = "Start")
     }
+    Button(onClick = {}) {
+      Text(text = "Options")
+    }
+    Button(
+      onClick = {
+        activity?.finishAndRemoveTask()
+      }
+    ) {
+      Text(text = "Exit")
+    }
+  }
 }
