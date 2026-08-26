@@ -10,24 +10,15 @@ import android.os.Message
 import android.view.Choreographer
 import android.view.Surface
 import androidx.core.graphics.minus
-import androidx.core.graphics.plus
 import androidx.core.graphics.withSave
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.min
 
 class BackgroundThread(private val surface: Surface, val x: Int, val y: Int) :
   Thread(), Handler.Callback {
   var handler: Handler? = null
   var choreographer: Choreographer? = null
   var touchPoint: Point? = null
-  var analogPoint: Point? = null
-  var radius: Int? = null
-
-  init {
-    val canvas = surface.lockCanvas(null)
-    radius = canvas!!.height shr 2
-    surface.unlockCanvasAndPost(canvas)
-  }
+  var movePoint: Point? = null
 
   private val rectPaint =
     Paint().apply {
@@ -53,20 +44,25 @@ class BackgroundThread(private val surface: Surface, val x: Int, val y: Int) :
 
   fun doFrame(timeNanos: Long) {
     val canvas = surface.lockCanvas(null)
+    val analogRangeRadius = canvas.height shr 2
     canvas.withSave {
       drawColor(Color.WHITE)
       drawRect(Rect(x, y, x + 100, y + 100), rectPaint)
       if (touchPoint != null) {
-        val radius = this.height shr 2
         drawCircle(
           touchPoint!!.x.toFloat(),
           touchPoint!!.y.toFloat(),
-          radius.toFloat(),
+          analogRangeRadius.toFloat(),
           outlinePaint,
         )
       }
-      if (analogPoint != null) {
-        drawCircle(analogPoint!!.x.toFloat(), analogPoint!!.y.toFloat(), 100f, analogPaint)
+      if (movePoint != null && touchPoint != null) {
+        val touchPointVec = Vector(touchPoint!!.x, touchPoint!!.y)
+        val movePointVec = Vector(movePoint!!.x, movePoint!!.y)
+        var vec = movePointVec.minus(touchPointVec)
+        val scalar = min(analogRangeRadius.toFloat(), vec.length())
+        vec = vec.normalized().multiply(scalar).plus(touchPointVec)
+        drawCircle(vec.x, vec.y, 100f, analogPaint)
       }
     }
     surface.unlockCanvasAndPost(canvas)
@@ -89,29 +85,20 @@ class BackgroundThread(private val surface: Surface, val x: Int, val y: Int) :
     when (val event = msg.data.getParcelable("event", InputEvent::class.java)) {
       InputEvent.Released -> {
         touchPoint = null
-        analogPoint = null
+        movePoint = null
       }
       is InputEvent.Moved -> {
-        analogPoint = Point(event.x.toInt(), event.y.toInt())
-        val vec = analogPoint?.minus(touchPoint!!)
-        val x = vec!!.x.toDouble()
-        val y = vec.y.toDouble()
-        val len = sqrt(x.pow(2) + y.pow(2))
-        if (len > radius!!) {
-          vec.x = ((x / len) * radius!!).toInt()
-          vec.y = ((y / len) * radius!!).toInt()
-          analogPoint = touchPoint!!.plus(vec)
-        }
+        movePoint = Point(event.x.toInt(), event.y.toInt())
       }
 
       is InputEvent.Pressed -> {
         touchPoint = Point(event.x.toInt(), event.y.toInt())
-        analogPoint = Point(event.x.toInt(), event.y.toInt())
+        movePoint = touchPoint!!
       }
 
       null -> {
         touchPoint = null
-        analogPoint = null
+        movePoint = null
       }
     }
     return true
