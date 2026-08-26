@@ -36,4 +36,8 @@ class Vector {
   fun multiply(scalar: Float): Vector {
     return Vector(x * scalar, y * scalar)
   }
+
+  fun divide(scalar: Float): Vector {
+    return Vector(x / scalar, y / scalar)
+  }
 }

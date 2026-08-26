@@ -26,7 +26,7 @@ class TwoDView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
   override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {}
 
   override fun surfaceCreated(holder: SurfaceHolder) {
-    worker = BackgroundThread(holder.surface, x, y)
+    worker = BackgroundThread(holder.surface, x, y, 500.0f)
     worker.start()
   }
 
