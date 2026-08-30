@@ -25,5 +25,8 @@
                   android:name=".two_dimensional.TwoDActivity"
                   tools:ignore="DiscouragedApi"
         />
+        <activity android:exported="false"
+                  android:name=".coordinates.CoordinatesActivity"
+        />
     </application>
 </manifest>

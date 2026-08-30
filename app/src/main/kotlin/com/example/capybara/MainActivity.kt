@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.example.capybara.coordinates.CoordinatesActivity
 import com.example.capybara.two_dimensional.TwoDActivity
 
 class MainActivity : ComponentActivity() {
@@ -53,6 +54,14 @@ fun MainActivityContent() {
       }
     ) {
       Text(text = "Start")
+    }
+    Button(
+      onClick = {
+        val intent = Intent(activity, CoordinatesActivity::class.java)
+        activity?.startActivity(intent)
+      }
+    ) {
+      Text(text = "Coordinates")
     }
     Button(onClick = {}) {
       Text(text = "Options")
