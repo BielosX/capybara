@@ -12,6 +12,8 @@ class Vector(private val dimensions: ArrayList<Float>) {
     }
   }
 
+  constructor(vararg d: Float) : this(d.toCollection(ArrayList()))
+
   constructor(vararg d: Int) : this(d.map { it.toFloat() }.toCollection(ArrayList()))
 
   operator fun plus(other: Vector): Vector {
