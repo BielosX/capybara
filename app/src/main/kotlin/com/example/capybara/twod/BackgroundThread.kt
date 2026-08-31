@@ -9,6 +9,7 @@ import android.os.Message
 import android.view.Choreographer
 import android.view.Surface
 import androidx.core.graphics.withSave
+import com.example.capybara.math.Vector
 import kotlin.math.min
 
 class BackgroundThread(private val surface: Surface, x: Int, y: Int, val maxVelocity: Float) :
@@ -53,18 +54,17 @@ class BackgroundThread(private val surface: Surface, x: Int, y: Int, val maxVelo
     if (touchPoint != null && movePoint != null) {
       touchPointVec = Vector(touchPoint!!.x, touchPoint!!.y)
       val movePointVec = Vector(movePoint!!.x, movePoint!!.y)
-      deflectionVec = movePointVec.minus(touchPointVec)
+      deflectionVec = movePointVec - touchPointVec
       val scalar = min(analogRangeRadius.toFloat(), deflectionVec.length())
-      deflectionVec = deflectionVec.normalized().multiply(scalar)
+      deflectionVec = deflectionVec.normalized() * scalar
     }
     if (deflectionVec != null && deflectionVec.length() > 0.1f) {
-      val shift =
-        deflectionVec.divide(analogRangeRadius.toFloat()).multiply(maxVelocity).multiply(timeDiff)
+      val shift = deflectionVec / analogRangeRadius.toFloat() * maxVelocity * timeDiff
       circlePosition = circlePosition.plus(shift)
     }
     canvas.withSave {
       drawColor(Color.WHITE)
-      drawCircle(circlePosition.x, circlePosition.y, 100.0f, circlePaint)
+      drawCircle(circlePosition[0], circlePosition[1], 100.0f, circlePaint)
       if (touchPoint != null) {
         drawCircle(
           touchPoint!!.x.toFloat(),
@@ -75,7 +75,7 @@ class BackgroundThread(private val surface: Surface, x: Int, y: Int, val maxVelo
       }
       if (deflectionVec != null) {
         val vec = deflectionVec.plus(touchPointVec!!)
-        drawCircle(vec.x, vec.y, 100f, analogPaint)
+        drawCircle(vec[0], vec[1], 100f, analogPaint)
       }
     }
     surface.unlockCanvasAndPost(canvas)
