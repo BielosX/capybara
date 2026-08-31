@@ -2,13 +2,13 @@ package com.example.capybara.math
 
 import kotlin.math.sqrt
 
-class IncorrectVectorLength(message: String) : RuntimeException(message)
+class IncorrectVectorSize(message: String) : RuntimeException(message)
 
 class Vector(private val dimensions: ArrayList<Float>) {
 
   init {
     if (dimensions.isEmpty()) {
-      throw IncorrectVectorLength("Empty vector")
+      throw IncorrectVectorSize("Empty vector")
     }
   }
 
@@ -16,7 +16,7 @@ class Vector(private val dimensions: ArrayList<Float>) {
 
   operator fun plus(other: Vector): Vector {
     if (other.size() != this.size()) {
-      throw IncorrectVectorLength("this: ${this.size()}, other: ${other.size()}")
+      throw IncorrectVectorSize("this: ${this.size()}, other: ${other.size()}")
     }
     return Vector(
       dimensions.mapIndexed { index, f -> f + other.dimensions[index] }.toCollection(ArrayList())
@@ -25,7 +25,7 @@ class Vector(private val dimensions: ArrayList<Float>) {
 
   operator fun minus(other: Vector): Vector {
     if (other.size() != this.size()) {
-      throw IncorrectVectorLength("this: ${this.size()}, other: ${other.size()}")
+      throw IncorrectVectorSize("this: ${this.size()}, other: ${other.size()}")
     }
     return Vector(
       dimensions.mapIndexed { index, f -> f - other.dimensions[index] }.toCollection(ArrayList())
