@@ -1,4 +1,4 @@
-package com.example.capybara.two_dimensional
+package com.example.capybara.twod
 
 import android.graphics.Color
 import android.graphics.Paint

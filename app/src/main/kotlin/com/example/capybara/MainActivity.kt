@@ -18,7 +18,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.capybara.coordinates.CoordinatesActivity
-import com.example.capybara.two_dimensional.TwoDActivity
+import com.example.capybara.twod.TwoDActivity
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

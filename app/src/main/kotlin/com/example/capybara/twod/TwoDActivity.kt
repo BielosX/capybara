@@ -1,4 +1,4 @@
-package com.example.capybara.two_dimensional
+package com.example.capybara.twod
 
 import android.os.Bundle
 import android.os.Parcelable

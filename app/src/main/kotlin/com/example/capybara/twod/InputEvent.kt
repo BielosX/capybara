@@ -1,4 +1,4 @@
-package com.example.capybara.two_dimensional
+package com.example.capybara.twod
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
