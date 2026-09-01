@@ -21,4 +21,25 @@ class Matrix(private val rows: ArrayList<ArrayList<Float>>) {
     }
     return Vector(results)
   }
+
+  companion object {
+    fun normalizedViewMatrix(width: Int, height: Int): Matrix {
+      val w = width.toFloat()
+      val h = height.toFloat()
+      val ratio = w / h
+      /*
+       ratio = width / height
+       x' = 1/ratio * x * width = (1/ratio * width) * x + 0 * y + 0
+       y' = height - height * y = 0 * x - height * y + height
+       | (1/ratio * width) 0 0 |
+       | 0 -height height |
+      */
+      return Matrix(
+        arrayListOf(
+          arrayListOf(1.0f / ratio * w, 0.0f, 0.0f),
+          arrayListOf(0.0f, -h, h),
+        )
+      )
+    }
+  }
 }

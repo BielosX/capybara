@@ -56,23 +56,7 @@ class CoordinatesView(context: Context) : View(context) {
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
-    val w = width.toFloat()
-    val h = height.toFloat()
-    val ratio = w / h
-    /*
-     ratio = width / height
-     x' = 1/ratio * x * width = (1/ratio * width) * x + 0 * y + 0
-     y' = height - height * y = 0 * x - height * y + height
-     | (1/ratio * width) 0 0 |
-     | 0 -height height |
-    */
-    val viewMatrix =
-      Matrix(
-        arrayListOf(
-          arrayListOf(1.0f / ratio * w, 0.0f, 0.0f),
-          arrayListOf(0.0f, -h, h),
-        )
-      )
+    val viewMatrix = Matrix.normalizedViewMatrix(w, h)
     viewLines =
       normalizedLines.map { viewMatrix * it }.flatMap { arrayListOf(it[0], it[1]) }.toFloatArray()
     viewX = viewMatrix * normalizedX
