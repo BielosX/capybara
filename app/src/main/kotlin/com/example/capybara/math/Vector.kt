@@ -42,17 +42,16 @@ class Vector(private val dimensions: ArrayList<Float>) {
     return dimensions.size
   }
 
+  operator fun div(scalar: Float): Vector {
+    return Vector(dimensions.map { it / scalar }.toCollection(ArrayList()))
+  }
+
   fun normalized(): Vector {
-    val len = length()
-    return Vector(dimensions.map { it / len }.toCollection(ArrayList()))
+    return this / length()
   }
 
   operator fun times(scalar: Float): Vector {
     return Vector(dimensions.map { it * scalar }.toCollection(ArrayList()))
-  }
-
-  operator fun div(scalar: Float): Vector {
-    return Vector(dimensions.map { it / scalar }.toCollection(ArrayList()))
   }
 
   operator fun get(index: Int): Float = dimensions[index]
