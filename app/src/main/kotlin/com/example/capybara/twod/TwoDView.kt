@@ -15,8 +15,8 @@ import android.view.SurfaceView
 */
 class TwoDView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
   lateinit var worker: BackgroundThread
-  var x: Int = 0
-  var y: Int = 0
+  var initX: Float = 0.0f
+  var initY: Float = 0.0f
   var firstPointerId: Int? = null
 
   init {
@@ -26,7 +26,7 @@ class TwoDView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
   override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {}
 
   override fun surfaceCreated(holder: SurfaceHolder) {
-    worker = BackgroundThread(holder.surface, x, y, 500.0f)
+    worker = BackgroundThread(holder.surface, initX, initY, width, height, 2.0f)
     worker.start()
   }
 
@@ -45,21 +45,21 @@ class TwoDView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
       MotionEvent.ACTION_DOWN -> {
         firstPointerId = event.getPointerId(0)
         msg.data.putParcelable("event", InputEvent.Pressed(event.x, event.y))
-        worker.handler?.dispatchMessage(msg)
+        worker.inputHandler?.dispatchMessage(msg)
         return true
       }
       // https://developer.android.com/reference/android/view/MotionEvent#batching
       MotionEvent.ACTION_MOVE -> {
         if (firstPointerId != null && event.getPointerId(event.actionIndex) == firstPointerId) {
           msg.data.putParcelable("event", InputEvent.Moved(event.x, event.y))
-          worker.handler?.dispatchMessage(msg)
+          worker.inputHandler?.dispatchMessage(msg)
         }
         return true
       }
       MotionEvent.ACTION_POINTER_UP -> {
         if (firstPointerId != null && event.getPointerId(event.actionIndex) == firstPointerId) {
           msg.data.putParcelable("event", InputEvent.Released)
-          worker.handler?.dispatchMessage(msg)
+          worker.inputHandler?.dispatchMessage(msg)
           firstPointerId = null
         }
         return true
@@ -67,7 +67,7 @@ class TwoDView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
       MotionEvent.ACTION_UP -> {
         if (firstPointerId != null) {
           msg.data.putParcelable("event", InputEvent.Released)
-          worker.handler?.dispatchMessage(msg)
+          worker.inputHandler?.dispatchMessage(msg)
           firstPointerId = null
         }
       }

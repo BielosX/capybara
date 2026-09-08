@@ -1,81 +1,66 @@
 package com.example.capybara.twod
 
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Point
-import android.os.Handler
 import android.os.Looper
-import android.os.Message
 import android.view.Choreographer
 import android.view.Surface
 import androidx.core.graphics.withSave
+import com.example.capybara.math.Matrix
 import com.example.capybara.math.Vector
-import kotlin.math.min
 
-class BackgroundThread(private val surface: Surface, x: Int, y: Int, val maxVelocity: Float) :
-  Thread(), Handler.Callback {
-  var handler: Handler? = null
+class BackgroundThread(
+  private val surface: Surface,
+  initX: Float,
+  initY: Float,
+  val width: Int,
+  val height: Int,
+  val maxVelocity: Float,
+) : Thread() {
   var choreographer: Choreographer? = null
-  var touchPoint: Point? = null
-  var movePoint: Point? = null
   var lastFrameTime: Long? = null
-  var circlePosition: Vector = Vector(x, y)
-
-  private val circlePaint =
-    Paint().apply {
-      isAntiAlias = true
-      color = Color.RED
-      style = Paint.Style.FILL
-    }
-
-  private val outlinePaint =
-    Paint().apply {
-      isAntiAlias = true
-      color = Color.GRAY
-      style = Paint.Style.STROKE
-      strokeWidth = 4f
-    }
-
-  private val analogPaint =
-    Paint().apply {
-      isAntiAlias = true
-      color = Color.GRAY
-      style = Paint.Style.FILL
-    }
+  var circlePosition: Vector = Vector(initX, initY)
+  var inputHandler: JoystickInputHandler? = null
+  val joystickRangeRadius: Float = 0.30f
+  val joystickRadius: Float = 0.1f
+  val playerRadius: Float = 0.1f
+  val aspectRatio: Float = width.toFloat() / height.toFloat()
+  val viewMatrix = Matrix.normalizedViewMatrix(width, height)
 
   fun doFrame(timeNanos: Long) {
     lastFrameTime = lastFrameTime ?: timeNanos
     val timeDiff = (timeNanos - lastFrameTime!!).toFloat() / 1_000_000_000f
     lastFrameTime = timeNanos
+    inputHandler?.moveVec?.apply {
+      circlePosition += this.project(2) * maxVelocity * timeDiff
+    }
+    val movePoint: Vector? = inputHandler?.movePoint ?: inputHandler?.touchPoint
     val canvas = surface.lockCanvas(null)
-    val analogRangeRadius = canvas.height shr 2
-    var deflectionVec: Vector? = null
-    var touchPointVec: Vector? = null
-    if (touchPoint != null && movePoint != null) {
-      touchPointVec = Vector(touchPoint!!.x, touchPoint!!.y)
-      val movePointVec = Vector(movePoint!!.x, movePoint!!.y)
-      deflectionVec = movePointVec - touchPointVec
-      val scalar = min(analogRangeRadius.toFloat(), deflectionVec.length())
-      deflectionVec = deflectionVec.normalized() * scalar
-    }
-    if (deflectionVec != null && deflectionVec.length() > 0.1f) {
-      val shift = deflectionVec / analogRangeRadius.toFloat() * maxVelocity * timeDiff
-      circlePosition = circlePosition.plus(shift)
-    }
+    val position = viewMatrix * circlePosition.homogeneous()
     canvas.withSave {
       drawColor(Color.WHITE)
-      drawCircle(circlePosition[0], circlePosition[1], 100.0f, circlePaint)
-      if (touchPoint != null) {
+      drawCircle(
+        position[0],
+        position[1],
+        playerRadius * width * 1.0f / aspectRatio,
+        circlePaint,
+      )
+      inputHandler?.touchPoint?.apply {
+        val position = viewMatrix * this
         drawCircle(
-          touchPoint!!.x.toFloat(),
-          touchPoint!!.y.toFloat(),
-          analogRangeRadius.toFloat(),
+          position[0],
+          position[1],
+          joystickRangeRadius * width * 1.0f / aspectRatio,
           outlinePaint,
         )
       }
-      if (deflectionVec != null) {
-        val vec = deflectionVec.plus(touchPointVec!!)
-        drawCircle(vec[0], vec[1], 100f, analogPaint)
+      movePoint?.apply {
+        val position = viewMatrix * this
+        drawCircle(
+          position[0],
+          position[1],
+          joystickRadius * width * 1.0f / aspectRatio,
+          analogPaint,
+        )
       }
     }
     surface.unlockCanvasAndPost(canvas)
@@ -84,36 +69,15 @@ class BackgroundThread(private val surface: Surface, x: Int, y: Int, val maxVelo
 
   override fun run() {
     Looper.prepare()
-    Looper.myLooper()?.let { handler = Handler(it, this) }
+    Looper.myLooper()?.let {
+      inputHandler = JoystickInputHandler(it, width, height, joystickRangeRadius)
+    }
     choreographer = Choreographer.getInstance()
     choreographer?.postFrameCallback(::doFrame)
     Looper.loop()
   }
 
   fun quit() {
-    handler?.looper?.quitSafely()
-  }
-
-  override fun handleMessage(msg: Message): Boolean {
-    when (val event = msg.data.getParcelable("event", InputEvent::class.java)) {
-      InputEvent.Released -> {
-        touchPoint = null
-        movePoint = null
-      }
-      is InputEvent.Moved -> {
-        movePoint = Point(event.x.toInt(), event.y.toInt())
-      }
-
-      is InputEvent.Pressed -> {
-        touchPoint = Point(event.x.toInt(), event.y.toInt())
-        movePoint = touchPoint!!
-      }
-
-      null -> {
-        touchPoint = null
-        movePoint = null
-      }
-    }
-    return true
+    inputHandler?.looper?.quitSafely()
   }
 }

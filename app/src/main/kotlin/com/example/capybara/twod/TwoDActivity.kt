@@ -14,7 +14,7 @@ class TwoDActivity : ComponentActivity() {
      https://developer.android.com/kotlin/parcelize
      https://plugins.gradle.org/plugin/org.jetbrains.kotlin.plugin.parcelize
   */
-  @Parcelize data class Input(val x: Int = 0, val y: Int = 0) : Parcelable
+  @Parcelize data class Input(val x: Float = 0.0f, val y: Float = 0.0f) : Parcelable
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -23,15 +23,15 @@ class TwoDActivity : ComponentActivity() {
       WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     actionBar?.hide()
-    var input = Input(0, 0)
+    var input = Input(0.0f, 0.0f)
     intent.extras.let { extras ->
       extras?.getParcelable<Input>("input", Input::class.java)?.let {
         input = it
       }
     }
     val view = TwoDView(this)
-    view.x = input.x
-    view.y = input.y
+    view.initX = input.x
+    view.initY = input.y
     setContentView(view)
   }
 }

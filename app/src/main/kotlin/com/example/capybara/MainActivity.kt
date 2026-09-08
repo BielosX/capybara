@@ -48,7 +48,7 @@ fun MainActivityContent() {
       onClick = {
         val intent =
           Intent(activity, TwoDActivity::class.java).apply {
-            putExtra("input", TwoDActivity.Input(200, 1000))
+            putExtra("input", TwoDActivity.Input(0.5f, 0.5f))
           }
         activity?.startActivity(intent)
       }
