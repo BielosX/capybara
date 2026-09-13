@@ -26,6 +26,7 @@
                   tools:ignore="DiscouragedApi"
         />
         <activity android:exported="false"
+                  android:label="coordinates"
                   android:name=".coordinates.CoordinatesActivity"
         />
     </application>
