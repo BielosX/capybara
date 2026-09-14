@@ -9,10 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 
 @Composable
-fun MainMenu(nav: NavController) {
+fun MainMenu(stack: MutableList<Routes>) {
   val activity = LocalActivity.current
   Column(
     modifier = Modifier.fillMaxSize(),
@@ -21,21 +20,21 @@ fun MainMenu(nav: NavController) {
   ) {
     Button(
       onClick = {
-        nav.navigate(TwoDRoute(0.5f, 0.5f))
+        stack.add(Routes.TwoD(0.5f, 0.5f))
       }
     ) {
       Text(text = "Start")
     }
     Button(
       onClick = {
-        nav.navigate(CoordinatesRoute)
+        stack.add(Routes.Coordinates)
       }
     ) {
       Text(text = "Coordinates")
     }
     Button(
       onClick = {
-        nav.navigate(OptionsRoute)
+        stack.add(Routes.Options)
       }
     ) {
       Text(text = "Options")

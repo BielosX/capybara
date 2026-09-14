@@ -2,10 +2,13 @@ package com.example.capybara
 
 import kotlinx.serialization.Serializable
 
-@Serializable object MainMenuRoute
+@Serializable
+sealed class Routes {
+  object MainMenu : Routes()
 
-@Serializable object CoordinatesRoute
+  object Coordinates : Routes()
 
-@Serializable data class TwoDRoute(val x: Float, val y: Float)
+  object Options : Routes()
 
-@Serializable object OptionsRoute
+  data class TwoD(val x: Float, val y: Float) : Routes()
+}

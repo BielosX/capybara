@@ -41,11 +41,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
 
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
-    implementation(libs.androidx.navigation.dynamic.features.fragment)
-    androidTestImplementation(libs.androidx.navigation.testing)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
 }
 
 tasks.withType<Test> {
